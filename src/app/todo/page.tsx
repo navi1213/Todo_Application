@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { Provider } from "react-redux";
 import store from "../../store";
 import TodoItem from "../components/TodoItem";
