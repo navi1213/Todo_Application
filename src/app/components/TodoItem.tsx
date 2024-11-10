@@ -18,7 +18,9 @@ dayjs.locale("ja");
 
 const TodoItem = () => {
   const todos = useSelector((state: RootState) => state.todos.todos as Todo[]);
-  const [editingContentMap, setEditingContentMap] = useState<Record<number, string>>({});
+  const [editingContentMap, setEditingContentMap] = useState<
+    Record<number, string>
+  >({});
   const dispatch = useDispatch();
 
   const complete = (todo: Todo) => {
@@ -36,7 +38,10 @@ const TodoItem = () => {
     }
   };
 
-  const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>, todo: Todo) => {
+  const changeContent = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    todo: Todo
+  ) => {
     setEditingContentMap((prev) => ({
       ...prev,
       [todo.id]: e.target.value,
@@ -52,7 +57,10 @@ const TodoItem = () => {
     dispatch(updateTodo({ todo: newTodo }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, todo: Todo) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    todo: Todo
+  ) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Shift + Enter の場合は無視して改行を許可
       confirmContent(todo); // Enterが押されたときにconfirmContentを呼び出す
@@ -70,7 +78,7 @@ const TodoItem = () => {
             >
               ×
             </button>
-            <form onSubmit={(e) => confirmContent(todo)} className="h-full">
+            <form onSubmit={() => confirmContent(todo)} className="h-full">
               {todo.isEditing ? (
                 <textarea
                   value={editingContentMap[todo.id] || ""}
@@ -102,4 +110,3 @@ const TodoItem = () => {
 };
 
 export default TodoItem;
-
