@@ -1,25 +1,24 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { addTodo } from "../../../store/modules/todoSlice";
-import dayjs from "dayjs";
-import StarRating from "../Form/StarRating";
+
 const Form = () => {
   const [enteredTodo, setEnteredTodo] = useState("");
   const [priority, setPriority] = useState(1);
   const dispatch = useDispatch();
 
-  const add = (e) => {
+  // `e` の型を明示的に指定
+  const add = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newTodo = {
       id: Math.floor(Math.random() * 1e5),
       content: enteredTodo,
+      timestamp: Date.now(),
       isEditing: false,
       priority: priority,
-      timestamp: dayjs().valueOf(),
     };
     dispatch(addTodo({ todo: newTodo }));
-    setEnteredTodo("");
-    setPriority(1);
+    setEnteredTodo(""); // フォーム送信後に入力フィールドをクリア
   };
 
   return (
@@ -33,7 +32,6 @@ const Form = () => {
           className="p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
-        <StarRating onRatingChange={(value) => setPriority(value)} />
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -46,3 +44,4 @@ const Form = () => {
 };
 
 export default Form;
+
