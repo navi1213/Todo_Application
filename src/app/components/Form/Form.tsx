@@ -1,13 +1,23 @@
 import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addTodo } from "../../../store/modules/todoSlice";
 
 const Form = () => {
   const [enteredTodo, setEnteredTodo] = useState("");
-  const [priority, setPriority] = useState(1);
+  const [priority, _] = useState(1);
   const dispatch = useDispatch();
 
-  // `e` の型を明示的に指定
+  // ハイドレーション問題を避けるためにクライアント側でのみ実行
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null; // サーバー側レンダリング中は何も描画しない
+  }
+
   const add = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newTodo = {
