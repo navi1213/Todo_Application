@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect ,ReactNode} from "react";
 import { Rnd } from "react-rnd";
 
 const getRandomPosition = () => {
   return { x: Math.random() * 500, y: Math.random() * 500 };
 };
-
-const DraggableResizableWrapper = ({ children }) => {
+interface DraggableResizableWrapperProps {
+  children: ReactNode; // children の型を明示的に ReactNode と指定
+}
+const DraggableResizableWrapper: React.FC<DraggableResizableWrapperProps> = ({ children }) => {
   const [size, setSize] = useState({ width: 200, height: 200 });
   const [position, setPosition] = useState(getRandomPosition());
 
