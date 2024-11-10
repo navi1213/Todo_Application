@@ -2,19 +2,30 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import DraggableResizableWrapper from "../components/Wrapper/DraggableItem";
 import { deleteTodo, updateTodo } from "../../store/modules/todoSlice";
+import { RootState } from "../../store/index";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+
+interface Todo {
+  id: number;
+  content: string;
+  timestamp: number;
+  isEditing: boolean;
+  priority: number;
+}
+
+dayjs.locale("ja");
+
 const TodoItem = () => {
-  dayjs.locale("ja");
-  const todos = useSelector((state) => state.todos.todos);
-  const [editingContentMap, setEditingContentMap] = useState({});
+  const todos = useSelector((state: RootState) => state.todos.todos as Todo[]);
+  const [editingContentMap, setEditingContentMap] = useState<Record<number, string>>({});
   const dispatch = useDispatch();
 
-  const complete = (todo) => {
+  const complete = (todo: Todo) => {
     dispatch(deleteTodo({ todo }));
   };
 
-  const toggleEditMode = (todo) => {
+  const toggleEditMode = (todo: Todo) => {
     const newTodo = { ...todo, isEditing: !todo.isEditing };
     dispatch(updateTodo({ todo: newTodo }));
     if (!todo.isEditing) {
@@ -25,15 +36,14 @@ const TodoItem = () => {
     }
   };
 
-  const changeContent = (e, todo) => {
+  const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>, todo: Todo) => {
     setEditingContentMap((prev) => ({
       ...prev,
       [todo.id]: e.target.value,
     }));
   };
 
-  const confirmContent = (e, todo) => {
-    e.preventDefault();
+  const confirmContent = (todo: Todo) => {
     const newTodo = {
       ...todo,
       content: editingContentMap[todo.id] || todo.content,
@@ -42,10 +52,10 @@ const TodoItem = () => {
     dispatch(updateTodo({ todo: newTodo }));
   };
 
-  const handleKeyDown = (e, todo) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, todo: Todo) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Shift + Enter の場合は無視して改行を許可
-      confirmContent(e, todo); // Enterが押されたときにconfirmContentを呼び出す
+      confirmContent(todo); // Enterが押されたときにconfirmContentを呼び出す
     }
   };
 
@@ -60,14 +70,14 @@ const TodoItem = () => {
             >
               ×
             </button>
-            <form onSubmit={(e) => confirmContent(e, todo)} className="h-full">
+            <form onSubmit={(e) => confirmContent(todo)} className="h-full">
               {todo.isEditing ? (
                 <textarea
                   value={editingContentMap[todo.id] || ""}
                   onChange={(e) => changeContent(e, todo)}
                   onKeyDown={(e) => handleKeyDown(e, todo)}
                   className="w-full h-full p-2 border rounded resize-none overflow-auto"
-                  style={{ minHeight: "100px", maxHeight: "300px" }} // 最小・最大の高さを設定
+                  style={{ minHeight: "100px", maxHeight: "300px" }}
                 />
               ) : (
                 <div
@@ -75,12 +85,12 @@ const TodoItem = () => {
                   onDoubleClick={() => toggleEditMode(todo)}
                   style={{
                     whiteSpace: "pre-wrap",
-                    fontFamily: " Zen Kurenaido, sans-serif",
+                    fontFamily: "Zen Kurenaido, sans-serif",
                   }}
                 >
                   {todo.content}
-                  <div>{dayjs(todo.timestamp).format("YYYY-MM-DD HH:mm dd")}</div>
-                  <div>優先度:{todo.priority}</div>
+                  <div>{dayjs(todo.timestamp).format("YYYY-MM-DD HH:mm")}</div>
+                  <div>優先度: {todo.priority}</div>
                 </div>
               )}
             </form>
@@ -92,3 +102,4 @@ const TodoItem = () => {
 };
 
 export default TodoItem;
+

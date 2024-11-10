@@ -1,6 +1,6 @@
 "use client";
 import { Provider } from "react-redux";
-import store from "../../store";
+import { store } from "../../store";
 import TodoItem from "../components/TodoItem";
 import Form from "../components/Form/Form";
 import CompletedTodo from "../components/CompletedTodo";

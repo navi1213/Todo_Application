@@ -1,5 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+
+interface Todo {
+  id: number;
+  content: string;
+  isEditing: boolean;
+  timestamp: number;
+  priority: number;
+}
+
+interface TodoState {
+  todos: Todo[];
+  endedTodos: Todo[];
+}
+
 export const todoSlice = createSlice({
   name: "todos",
   initialState: {
@@ -9,7 +23,6 @@ export const todoSlice = createSlice({
         content: "買い物に行く",
         isEditing: false,
         timestamp: 1730467545178,
-        //3が最も高い数値,1が最も低い数値とする
         priority: 1,
       },
       {
@@ -28,33 +41,26 @@ export const todoSlice = createSlice({
       },
     ],
     endedTodos: [],
-  },
+  } as TodoState,
   reducers: {
-    addTodo: (state, { payload }) => {
-      state.todos.push(payload.todo);
+    addTodo: (state, action: PayloadAction<{ todo: Todo }>) => {
+      state.todos.push(action.payload.todo);
     },
-    deleteTodo: (state, { payload }) => {
-      state.endedTodos.push({ ...payload.todo, timestamp: dayjs().valueOf() });
-      state.todos = state.todos.filter((_todo) => {
-        return _todo.id !== payload.todo.id;
-      });
+    deleteTodo: (state, action: PayloadAction<{ todo: Todo }>) => {
+      state.endedTodos.push({ ...action.payload.todo, timestamp: dayjs().valueOf() });
+      state.todos = state.todos.filter((_todo) => _todo.id !== action.payload.todo.id);
     },
-    updateTodo: (state, { payload }) => {
-      state.todos = state.todos.map((_todo) => {
-        return _todo.id === payload.todo.id
-          ? { ..._todo, ...payload.todo }
-          : { ..._todo };
-      });
+    updateTodo: (state, action: PayloadAction<{ todo: Todo }>) => {
+      state.todos = state.todos.map((_todo) =>
+        _todo.id === action.payload.todo.id
+          ? { ..._todo, ...action.payload.todo }
+          : _todo
+      );
     },
   },
 });
 
-export const {
-  addTodo,
-  deleteTodo,
-  updateTodo,
-  reorderTodos,
-  addDeletedTodos,
-} = todoSlice.actions;
+export const { addTodo, deleteTodo, updateTodo } = todoSlice.actions;
 
 export default todoSlice.reducer;
+
