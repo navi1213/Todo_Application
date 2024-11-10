@@ -4,10 +4,10 @@ import { addTodo } from "../../../store/modules/todoSlice";
 
 const Form = () => {
   const [enteredTodo, setEnteredTodo] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [priority, _] = useState(1);
   const dispatch = useDispatch();
 
-  // ハイドレーション問題を避けるためにクライアント側でのみ実行
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const Form = () => {
   }, []);
 
   if (!isMounted) {
-    return null; // サーバー側レンダリング中は何も描画しない
+    return null;
   }
 
   const add = (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +28,7 @@ const Form = () => {
       priority: priority,
     };
     dispatch(addTodo({ todo: newTodo }));
-    setEnteredTodo(""); // フォーム送信後に入力フィールドをクリア
+    setEnteredTodo("");
   };
 
   return (
@@ -54,4 +54,3 @@ const Form = () => {
 };
 
 export default Form;
-

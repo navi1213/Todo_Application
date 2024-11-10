@@ -62,8 +62,8 @@ const TodoItem = () => {
     todo: Todo
   ) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Shift + Enter の場合は無視して改行を許可
-      confirmContent(todo); // Enterが押されたときにconfirmContentを呼び出す
+      e.preventDefault();
+      confirmContent(todo);
     }
   };
 
